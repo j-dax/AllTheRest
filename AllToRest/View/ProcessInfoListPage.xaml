@@ -5,10 +5,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:AllToRest"
              mc:Ignorable="d"
-             x:Class="AllToRest.InstalledProcessListPage">
+             x:Class="AllToRest.ProcessInfoListPage">
     
     <ContentPage.BindingContext>
-        <local:InstalledProcessListViewModel/>
+        <local:ProcessInfoListViewModel/>
     </ContentPage.BindingContext>
 
     <ContentPage.ToolbarItems>
@@ -28,7 +28,7 @@
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
 
             <ListView 
-                ItemsSource="{Binding InstalledProcesses}"
+                ItemsSource="{Binding RunningProcesses}"
                 ItemSelected="ListView_ItemSelected">
                 <ListView.ItemTemplate>
                     <DataTemplate>

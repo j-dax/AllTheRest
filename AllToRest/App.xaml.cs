@@ -10,7 +10,7 @@ namespace AllToRest
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new NavigationPage(new ProcessInfoListPage());
         }
 
         protected override void OnStart()

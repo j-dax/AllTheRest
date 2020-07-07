@@ -1,5 +1,6 @@
 ﻿using AllToRest.Service;
 using Android.App;
+using Android.Content.PM;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -9,7 +10,7 @@ using Xamarin.Forms;
 
 namespace AllToRest
 {
-    class InstalledProcessListViewModel : INotifyPropertyChanged
+    class ProcessInfoListViewModel : INotifyPropertyChanged
     {
         InstalledService installedService;
 
@@ -19,17 +20,20 @@ namespace AllToRest
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName))
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public ObservableCollection<ActivityManager.RunningAppProcessInfo> _runningProcesses;
-        public ObservableCollection<ActivityManager.RunningAppProcessInfo> RunningProcesses
+        public ObservableCollection<ApplicationInfo> _runningProcesses;
+        public ObservableCollection<ApplicationInfo> RunningProcesses
         {
             get { return _runningProcesses; }
             set { _runningProcesses = value; OnPropertyChanged(); }
         }
 
         public string ProcessName { get; set; }
+        public string Name { get; set; }
+        public int Logo { get; set; }
+
         public string SelectedProcess { get; set; }
 
         private bool _isBusy;
@@ -39,9 +43,10 @@ namespace AllToRest
             set { _isBusy = value; OnPropertyChanged(); }
         }
 
-        public InstalledProcessListViewModel()
+        public ProcessInfoListViewModel()
         {
             installedService = new InstalledService();
+            LoadProcesses(string.Empty);
 
             //MessagingCenter.Subscribe<ViewInstalledDetailPage, ActivityManager.RunningAppProcessInfo>(this, "ViewInstalledInfo",
             //    (page, appInfo) =>
@@ -50,12 +55,22 @@ namespace AllToRest
             //    });
         }
 
+        public void LoadProcesses(string query)
+        {
+            IsBusy = true;
+            Task.Run(async () =>
+            {
+                RunningProcesses = await installedService.GetApplicationInfoAsync(query);
+                IsBusy = false;
+            });
+        } 
+
         public void FilterInstalledApplications(string query)
         {
             IsBusy = true;
             Task.Run(async () =>
             {
-                RunningProcesses = await installedService.GetProcessInfoAsync(query);
+                RunningProcesses = await installedService.GetApplicationInfoAsync(query);
                 IsBusy = false;
             });
         }
